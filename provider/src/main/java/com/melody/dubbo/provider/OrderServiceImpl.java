@@ -24,7 +24,6 @@ public class OrderServiceImpl implements OrderService{
     private ZKCurator zkCurator;
 
     @Override
-    @Transactional
     public void orderCP(Integer num) {
         System.out.println("orderCP called..................");
         LapTop lapTop = orderDAO.findOne(2);
