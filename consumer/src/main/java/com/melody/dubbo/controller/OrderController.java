@@ -4,6 +4,7 @@ import com.alibaba.dubbo.config.annotation.Reference;
 import com.melody.dubbo.api.OrderService;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -23,12 +24,15 @@ public class OrderController  {
     private OrderService orderService;
 
     @GetMapping("/order-taptop/{num}")
-    public void orderLapTop(@PathVariable("num") Integer num){
-        orderService.orderCP(num);
+    public Integer orderLapTop(@PathVariable("num") Integer num){
+
+        return orderService.orderCP(num);
     }
+    @GetMapping("/order-taptop1/{num}")
+    public Integer orderLapTop1(@PathVariable("num") Integer num){
 
-
-
+        return orderService.orderCP(num);
+    }
 
     @GetMapping("/queryStockNum")
     public Long queryStockNum() throws InterruptedException {

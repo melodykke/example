@@ -7,6 +7,7 @@ import org.apache.curator.framework.recipes.cache.PathChildrenCacheEvent;
 import org.apache.curator.framework.recipes.cache.PathChildrenCacheListener;
 import org.apache.zookeeper.CreateMode;
 import org.apache.zookeeper.ZooDefs;
+import org.springframework.stereotype.Component;
 
 import java.util.concurrent.CountDownLatch;
 
@@ -14,6 +15,7 @@ import java.util.concurrent.CountDownLatch;
  * 分布式锁的实现工具类
  */
 @Slf4j
+@Component
 public class DistributedLock {
     private CuratorFramework client = null;
     //用于挂起当前请求，并且等待上一个分布式锁释放

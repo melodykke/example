@@ -5,11 +5,9 @@ import com.alibaba.dubbo.config.annotation.Service;
 import com.melody.dubbo.api.OrderService;
 import com.melody.dubbo.dao.OrderDAO;
 import com.melody.dubbo.entity.LapTop;
-import com.melody.dubbo.utils.ZKCurator;
+import com.melody.dubbo.utils.DistributedLock;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.transaction.Transactional;
 import java.util.Random;
 
 
@@ -21,24 +19,28 @@ public class OrderServiceImpl implements OrderService{
     @Autowired
     private OrderDAO orderDAO;
     @Autowired
-    private ZKCurator zkCurator;
+    private DistributedLock distributedLock;
 
     @Override
-    public void orderCP(Integer num) {
+    public Integer orderCP(Integer num) {
         System.out.println("orderCP called..................");
+        //执行订单流程之前使得当前业务获得分布式锁
+        distributedLock.getLock();
         LapTop lapTop = orderDAO.findOne(2);
         if(lapTop.getQuntity() < num){
             log.info("库存不足！ 库存量：{} ； 请求数量：{}", lapTop.getQuntity(), num);
-            return ;
+            distributedLock.releaseLock();
+            return -1;
         }
         lapTop.setQuntity(lapTop.getQuntity() - num);
-
         try {
-            Thread.sleep(5000);
+            Thread.sleep(7000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         orderDAO.save(lapTop);
+        distributedLock.releaseLock();
+        return 100;
     }
 
     public Long queryStockNum() {
